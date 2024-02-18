@@ -1,0 +1,44 @@
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        register-health-indicator: true # register circuitbreaker on actuator
+
+        ########## FAILURE RATE ##########
+        sliding-window-type: count_based # recent request call to make the state decision
+        sliding-window-size: 100 # ringBufferSizeInClosedState
+        minimum-number-of-calls: 5 # to run cb (even if failure rate threshold is exceeded, cb doesn't work if it's less than min num of call)
+
+        ########## CLOSED -> OPEN ##########
+        failure-rate-threshold: 50 # failure rate threshold to open/close circuit breaker
+        slow-call-duration-threshold: 5ms # time threshold considered to be slow request
+        slow-call-rate-threshold: 50 # percentage to open/close cb (100% requests are over time threshold)
+
+        ########## OPEN -> HALF OPEN ###########
+        wait-duration-in-open-state: 10s # duration from first open to half open
+        automatic-transition-from-open-to-half-open-enabled: true
+
+        ########## HALF CLOSE ##########
+        permitted-number-of-calls-in-half-open-state: 5 # 5 request to be test if cb can be closed
+
+        ########## EXCEPTION ##########
+        record-exceptions: java.lang.IllegalArgumentException
+        # record-failure-predicate:
+        # ignore-exceptions:
+        # ignore-exception-predicate:
+
+  timelimiter:
+    instances:
+      myTimeLimiter:
+        timeout-duration: 100ms
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*" # actuator ????? ?? ??, ?? ??
+    enabled-by-default: true
+  health:
+    circuitbreakers:
+      enabled: true # actuator ?????? circuit breaker ?? ??, /actuator/health?? ?? ??

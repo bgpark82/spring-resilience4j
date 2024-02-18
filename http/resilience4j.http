@@ -1,0 +1,14 @@
+### 정상응답
+GET http://localhost:8080/my
+
+### 비정상응답 (10초)
+GET http://localhost:8080/my?delay=1000
+
+### curcuit break 테스트
+GET http://localhost:8080/my?test=cb&percentage=90&delay=10
+
+### TODO: actuator 의존성 추가
+### actuator
+GET http://localhost:8080/actuator/circuitbreakers
+
+
